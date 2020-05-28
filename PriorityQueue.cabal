@@ -1,0 +1,89 @@
+cabal-version: 1.12
+
+-- This file has been generated from package.yaml by hpack version 0.33.0.
+--
+-- see: https://github.com/sol/hpack
+--
+-- hash: e29b9e56c0fde59a2fee3623e24ac0b521d5a1786de401da1f21f0849016611d
+
+name:           PriorityQueue
+version:        0.1.0.0
+description:    Please see the README on GitHub at <https://github.com/QuietJoon/PriorityQueueBench#readme>
+homepage:       https://github.com/QuietJoon/PriorityQueueBench#readme
+bug-reports:    https://github.com/QuietJoon/PriorityQueueBench/issues
+author:         YongJoon Joe
+maintainer:     developer@yongjoon.net
+copyright:      2020 YongJoon Joe
+build-type:     Simple
+extra-source-files:
+    README.md
+    ChangeLog.md
+
+source-repository head
+  type: git
+  location: https://github.com/QuietJoon/PriorityQueueBench
+
+library
+  exposed-modules:
+      Class
+      Data
+      Instance
+      IntMapIntPSQ
+      IntMapMMPQ
+      IntMapPQueue
+      Type
+  other-modules:
+      Paths_PriorityQueue
+  hs-source-dirs:
+      src
+  build-depends:
+      PSQueue
+    , base >=4.7 && <5
+    , containers
+    , deepseq
+    , heaps
+    , min-max-pqueue
+    , pqueue
+    , psqueues
+  default-language: Haskell2010
+
+executable PriorityQueue-bench
+  main-is: Main.hs
+  other-modules:
+      Paths_PriorityQueue
+  hs-source-dirs:
+      benchmarks/many
+  ghc-options: -rtsopts -O2
+  build-depends:
+      PSQueue
+    , PriorityQueue
+    , base >=4.7 && <5
+    , containers
+    , criterion
+    , deepseq
+    , heaps
+    , min-max-pqueue
+    , pqueue
+    , psqueues
+    , random-adaptor
+  default-language: Haskell2010
+
+executable PriorityQueue-exe
+  main-is: Main.hs
+  other-modules:
+      Paths_PriorityQueue
+  hs-source-dirs:
+      app
+  ghc-options: -rtsopts
+  build-depends:
+      PSQueue
+    , PriorityQueue
+    , base >=4.7 && <5
+    , containers
+    , deepseq
+    , heaps
+    , min-max-pqueue
+    , pqueue
+    , psqueues
+    , random-adaptor
+  default-language: Haskell2010

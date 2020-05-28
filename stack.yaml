@@ -1,0 +1,11 @@
+resolver: lts-14.27
+
+packages:
+- .
+
+extra-deps:
+- splitmix-0.0.4
+- github: QuietJoon/random-adaptor
+  commit: 9d39b96703f70baff160e954ad06c3688c1265db
+- PSQueue-1.1.0.1@sha256:07b8e8141fbc6f6666a70389d8b8d6963d09cbd698f0740a079c835713c95c5f,1318
+- min-max-pqueue-0.1.0.1@sha256:a0721edf1634eae0b160cc53ebcddac93b462fd46951d0273ec0c0027e396ca5,1936

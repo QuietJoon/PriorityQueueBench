@@ -1,0 +1,48 @@
+name:                PriorityQueue
+version:             0.1.0.0
+github:              "QuietJoon/PriorityQueueBench"
+author:              "YongJoon Joe"
+maintainer:          "developer@yongjoon.net"
+copyright:           "2020 YongJoon Joe"
+
+extra-source-files:
+- README.md
+- ChangeLog.md
+
+description:         Please see the README on GitHub at <https://github.com/QuietJoon/PriorityQueueBench#readme>
+
+dependencies:
+- base >= 4.7 && < 5
+- containers
+- deepseq
+- PSQueue
+- min-max-pqueue
+- psqueues
+#- depq
+- heaps
+- pqueue
+# - hasky-btree
+
+
+library:
+  source-dirs: src
+
+executables:
+  PriorityQueue-exe:
+    main:                Main.hs
+    source-dirs:         app
+    ghc-options:
+    - -rtsopts
+    dependencies:
+    - PriorityQueue
+    - random-adaptor
+  PriorityQueue-bench: # Because hie with test/benchmark does not work well
+    main:                Main.hs
+    source-dirs:         benchmarks/many
+    ghc-options:
+    - -rtsopts
+    - -O2
+    dependencies:
+    - PriorityQueue
+    - criterion
+    - random-adaptor
