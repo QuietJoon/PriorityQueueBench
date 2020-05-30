@@ -10,6 +10,7 @@ import           Util.Adaptor.Random.SplitMix
 
 import           Data
 import           Type
+import           IntPSQMMPQ                    as PSMM
 import           IntMapMMPQ                    as MMPQ
 import           IntMapIntPSQ                  as IPSQ
 import           IntPSQIntPSQ                  as PSPS
@@ -26,7 +27,8 @@ main = do
   let idList              = [1 ..]
   let makingList          = randomInts makingGen
   let simInputList        = take 10000000 $ randomInts simGen
-  let instanceList = take 100 $ makeInstances makingList idList
+  let instanceList = take 100 $ D.makeInstances makingList idList
+  let iPSMMBigQueue       = PSMM.makeSimulation instanceList
   let iMMPQBigQueue       = MMPQ.makeSimulation instanceList
   let iIPSQBigQueue       = IPSQ.makeSimulation instanceList
   let iPSPSBigQueue       = PSPS.makeSimulation instanceList
@@ -34,6 +36,7 @@ main = do
 
   simInputList `deepseq` putStrLn "Evaluated"
 
+  print iPSMMBigQueue
   print iMMPQBigQueue
   print iIPSQBigQueue
   print iPSPSBigQueue

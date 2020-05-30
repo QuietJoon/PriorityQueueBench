@@ -11,6 +11,7 @@ import           Data.List
 import           Util.Adaptor.Random.SplitMix
 
 import qualified Data                          as D
+import           IntPSQMMPQ                    as PSMM
 import           IntMapMMPQ                    as MMPQ
 import           IntMapIntPSQ                  as IPSQ
 import           IntPSQIntPSQ                  as PSPS
@@ -32,6 +33,7 @@ main = do
   let makingList          = randomInts makingGen
   let simInputList        = take 10000000 $ randomInts simGen
   let instanceList = take 10000 $ D.makeInstances makingList idList
+  let iPSMMBigQueue       = PSMM.makeSimulation instanceList
   let iMMPQBigQueue       = MMPQ.makeSimulation instanceList
   let iIPSQBigQueue       = IPSQ.makeSimulation instanceList
   let iPSPSBigQueue       = PSPS.makeSimulation instanceList
@@ -39,6 +41,7 @@ main = do
 
   simInputList `deepseq` putStrLn "Evaluated"
 
+  print iPSMMBigQueue
   print iMMPQBigQueue
   print iIPSQBigQueue
   print iPSPSBigQueue
@@ -47,14 +50,16 @@ main = do
   let
     pqBench =
       bgroup "Simulation"
-        $ [ bench "IntPSQIPSQ"
-            $ nf (PSPS.runSimulation iPSPSBigQueue) simInputList
-          , bench "IntMapIPSQ"
-            $ nf (IPSQ.runSimulation iIPSQBigQueue) simInputList
+        $ [ bench "IntPSQMMPQ"
+            $ nf (PSMM.runSimulation iPSMMBigQueue) simInputList
           , bench "IntMapMMPQ"
             $ nf (MMPQ.runSimulation iMMPQBigQueue) simInputList
           , bench "IntMapIPQu"
             $ nf (IPQu.runSimulation iIPQuBigQueue) simInputList
+          , bench "IntPSQIPSQ"
+            $ nf (PSPS.runSimulation iPSPSBigQueue) simInputList
+          , bench "IntMapIPSQ"
+            $ nf (IPSQ.runSimulation iIPSQBigQueue) simInputList
           ]
   putStrLn "Do bench"
   defaultMainWith myConfig60s [pqBench]
