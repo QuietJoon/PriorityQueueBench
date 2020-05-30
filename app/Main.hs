@@ -22,9 +22,10 @@ main = do
   putStrLn "Initialize"
   let i0Gen               = mkGenFromInt 0
   let (makingGen, simGen) = splitGen i0Gen
+  let idList              = [1 ..]
   let makingList          = randomInts makingGen
   let simInputList        = take 10000000 $ randomInts simGen
-  let instanceList        = take 100 $ makeInstances makingList
+  let instanceList = take 100 $ makeInstances makingList idList
   let iMMPQBigQueue       = MMPQ.makeSimulation instanceList
   let iIPSQBigQueue       = IPSQ.makeSimulation instanceList
   let iIPQuBigQueue       = IPQu.makeSimulation instanceList

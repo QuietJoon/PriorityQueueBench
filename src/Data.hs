@@ -61,5 +61,5 @@ makeInstance i w x y z = I
   }
   where iT = rem w timeSlotSize
 
-makeInstances (i : w : x : y : z : zs) =
-  makeInstance i w x y z : makeInstances zs
+makeInstances (w : x : y : z : zs) (i : is) =
+  makeInstance i w x y z : makeInstances zs is
