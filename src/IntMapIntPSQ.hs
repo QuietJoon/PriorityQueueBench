@@ -15,8 +15,6 @@ import           Data
 import           Type
 import           Instance
 
---import           Debug.Trace
-
 
 type BigQueue = BQ.IntMap SmallQueue
 type SmallQueue = SQ.IntPSQ InternalTime Instance
@@ -82,6 +80,3 @@ runTimeSlotSub bQ sQ accList (r : rnList) = maybe
   newInstance = either id id eNewInstance
 
 getBigQueueSize = BQ.foldr (\v b -> SQ.size v + b) 0
-
---printBigQueue bQ = BQ.mapM_ (\x -> do putStrLn ""; printSmallQueue x) bQ
---printSmallQueue sQ = SQ.mapM_ print sQ

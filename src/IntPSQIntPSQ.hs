@@ -1,14 +1,14 @@
 {-# LANGUAGE RecordWildCards #-}
-module IntMapPQueue where
+module IntPSQIntPSQ where
 
 
 import           Control.DeepSeq
 
-import qualified Data.IntMap                   as BQ
+import qualified Data.IntPSQ                   as BQ
 import           Data.List
 import           Data.Maybe
 
-import qualified Data.PQueue.Min               as SQ
+import qualified Data.IntPSQ                   as SQ
 
 
 import           Data
@@ -16,8 +16,10 @@ import           Type
 import           Instance
 
 
-type BigQueue = BQ.IntMap SmallQueue
-type SmallQueue = SQ.MinQueue Instance
+-- BigQueue: Int :: Time, p :: Time, v :: SmallQueue
+type BigQueue = BQ.IntPSQ Time SmallQueue
+-- SmallQueue: Int :: InstanceID, p :: InternalTime, v :: Instance
+type SmallQueue = SQ.IntPSQ InternalTime Instance
 type AccList = [Instance]
 
 
@@ -30,9 +32,19 @@ makeSimulation iList = makeSimulationSub iList emptyBigQueue
 makeSimulationSub :: [Instance] -> BigQueue -> BigQueue
 makeSimulationSub is bQ = foldl (flip setInstance) bQ is
 
+-- alter ::          (Maybe     a  ->     Maybe     a)   -> Key -> IntMap a   ->     IntMap a
+-- alter :: Ord p => (Maybe (p, v) -> (b, Maybe (p, v))) -> Int -> IntPSQ p v -> (b, IntPSQ p v)
 setInstance :: Instance -> BigQueue -> BigQueue
 setInstance i@I {..} =
-  BQ.alter (Just . maybe (SQ.singleton i) (SQ.insert i)) timeSlot
+  snd
+    . BQ.alter
+        (maybe
+          (0, Just (timeSlot, SQ.singleton instanceID (getInternalTime i) i))
+          (\(_, v) ->
+            (0, Just (timeSlot, SQ.insert instanceID (getInternalTime i) i v))
+          )
+        )
+        timeSlot
 
 runSimulation :: BigQueue -> [Int] -> AccList
 runSimulation bQ rnList = theAccList
@@ -43,8 +55,7 @@ runTimeSlot bQ accList rnList = if BQ.null bQ
   then (bQ, accList, rnList)
   else runTimeSlot nextBQ nextAccList nextRNList
  where
-  (_, iSQ) = BQ.findMin bQ
-  newBQ    = BQ.deleteMin bQ
+  Just (_, _, iSQ, newBQ) = BQ.minView bQ
   (nextBQ, _, nextAccList, nextRNList) =
     runTimeSlotSub newBQ iSQ accList rnList
 
@@ -59,13 +70,16 @@ runTimeSlotSub bQ sQ accList (r : rnList) = maybe
   (const (runTimeSlotSub newBQ newSQ (newInstance : accList) rnList))
   mTheResult
  where
-  mTheResult           = SQ.minView sQ
-  (theInstance, theSQ) = fromJust mTheResult
-  currentTime          = timeSlot theInstance
-  eNewInstance         = runInstance theInstance r
-  newSQ                = either
+  mTheResult                 = SQ.minView sQ
+  (_, _, theInstance, theSQ) = fromJust mTheResult
+  currentTime                = timeSlot theInstance
+  eNewInstance               = runInstance theInstance r
+  newSQ                      = either
     (const theSQ)
-    (\i -> if timeSlot i == currentTime then SQ.insert i theSQ else theSQ)
+    (\i -> if timeSlot i == currentTime
+      then SQ.insert (instanceID i) (getInternalTime i) i theSQ
+      else theSQ
+    )
     eNewInstance
   newBQ = either
     (const bQ)
@@ -73,7 +87,4 @@ runTimeSlotSub bQ sQ accList (r : rnList) = maybe
     eNewInstance
   newInstance = either id id eNewInstance
 
-getBigQueueSize = BQ.foldr (\v b -> SQ.size v + b) 0
-
---printBigQueue bQ = BQ.mapM_ (\x -> do putStrLn ""; printSmallQueue x) bQ
---printSmallQueue sQ = SQ.mapM_ print sQ
+getBigQueueSize = BQ.fold' (\_ _ v b -> SQ.size v + b) 0

@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: e29b9e56c0fde59a2fee3623e24ac0b521d5a1786de401da1f21f0849016611d
+-- hash: 05f2212d0c99805dc970072ee5bb85742cd96202044624b9b4aa8b6d1f3605dd
 
 name:           PriorityQueue
 version:        0.1.0.0
@@ -31,6 +31,7 @@ library
       IntMapIntPSQ
       IntMapMMPQ
       IntMapPQueue
+      IntPSQIntPSQ
       Type
   other-modules:
       Paths_PriorityQueue

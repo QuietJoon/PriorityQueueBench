@@ -13,6 +13,7 @@ import           Util.Adaptor.Random.SplitMix
 import qualified Data                          as D
 import           IntMapMMPQ                    as MMPQ
 import           IntMapIntPSQ                  as IPSQ
+import           IntPSQIntPSQ                  as PSPS
 import           IntMapPQueue                  as IPQu
 
 
@@ -33,21 +34,25 @@ main = do
   let instanceList = take 10000 $ D.makeInstances makingList idList
   let iMMPQBigQueue       = MMPQ.makeSimulation instanceList
   let iIPSQBigQueue       = IPSQ.makeSimulation instanceList
+  let iPSPSBigQueue       = PSPS.makeSimulation instanceList
   let iIPQuBigQueue       = IPQu.makeSimulation instanceList
 
   simInputList `deepseq` putStrLn "Evaluated"
 
   print iMMPQBigQueue
   print iIPSQBigQueue
+  print iPSPSBigQueue
   print iIPQuBigQueue
 
   let
     pqBench =
       bgroup "Simulation"
-        $ [ bench "IntMapMMPQ"
-            $ nf (MMPQ.runSimulation iMMPQBigQueue) simInputList
+        $ [ bench "IntPSQIPSQ"
+            $ nf (PSPS.runSimulation iPSPSBigQueue) simInputList
           , bench "IntMapIPSQ"
             $ nf (IPSQ.runSimulation iIPSQBigQueue) simInputList
+          , bench "IntMapMMPQ"
+            $ nf (MMPQ.runSimulation iMMPQBigQueue) simInputList
           , bench "IntMapIPQu"
             $ nf (IPQu.runSimulation iIPQuBigQueue) simInputList
           ]
