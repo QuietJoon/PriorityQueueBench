@@ -39,9 +39,9 @@ setInstance i@I {..} =
   snd
     . BQ.alter
         (maybe
-          (0, Just (timeSlot, SQ.singleton instanceID (getInternalTime i) i))
+          ((), Just (timeSlot, SQ.singleton instanceID (getInternalTime i) i))
           (\(_, v) ->
-            (0, Just (timeSlot, SQ.insert instanceID (getInternalTime i) i v))
+            ((), Just (timeSlot, SQ.insert instanceID (getInternalTime i) i v))
           )
         )
         timeSlot

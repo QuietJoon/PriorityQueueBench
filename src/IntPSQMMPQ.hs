@@ -36,8 +36,8 @@ setInstance :: Instance -> BigQueue -> BigQueue
 setInstance i@I {..} =
   snd
     . BQ.alter
-        (maybe (0, Just (timeSlot, SQ.singleton getInternalTime i))
-               (\(_, v) -> (0, Just (timeSlot, SQ.insert getInternalTime i v)))
+        (maybe ((), Just (timeSlot, SQ.singleton getInternalTime i))
+               (\(_, v) -> ((), Just (timeSlot, SQ.insert getInternalTime i v)))
         )
         timeSlot
 
